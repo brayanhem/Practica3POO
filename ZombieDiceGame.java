@@ -28,7 +28,7 @@ public class ZombieDiceGame {
     }
 
     public void tirarDados() {
-        // 1. Completar la mano hasta tener 3 dados
+        //Completa la mano hasta que se tengan 3 dados
         int necesarios = 3 - dadosEnMano.size();
         ArrayList<ZombieDado> nuevos = vaso.tomarDados(necesarios);
         if(nuevos != null) {
@@ -38,7 +38,7 @@ public class ZombieDiceGame {
         ArrayList<ZombieDado> paraRegresarAlVaso = new ArrayList<ZombieDado>();
         ArrayList<ZombieDado> seQuedanParaSiguienteTiro = new ArrayList<ZombieDado>();
 
-        // 2. Lanzar cada dado y procesar resultado
+        // Lanzar cada dado y procesara los resultado
         for (int i = 0; i < dadosEnMano.size(); i++) {
             ZombieDado d = dadosEnMano.get(i);
             d.getVista().moverDados(100 + (i * 110), 100); // Separarlos visualmente
@@ -56,18 +56,24 @@ public class ZombieDiceGame {
             }
         }
 
-        // 3. Devolver los usados al vaso (Cerebros y Disparos no se vuelven a lanzar)
+        // Devolver los usados al vaso (Cerebros y Disparos no se vuelven a lanzar)
         vaso.devolverDado(paraRegresarAlVaso);
         this.dadosEnMano = seQuedanParaSiguienteTiro;
+        
+        if(disparosTurno >= 3){
+            this.cerebrosTurno=0;
+            
+        }
     }
 
     public void plantarse() {
         Jugador actual = jugadores.get(indiceJugadorActual);
-        // AQUÍ ESTABA TU ERROR: Ahora enviamos el puntaje del turno
+        
         actual.acumularCerebros(cerebrosTurno);
         
-        // Limpiar mesa para el siguiente
+        // Limpiar mesa para el siguiente jugador
         vaso.devolverDado(dadosEnMano);
+        dadosEnMano.clear();
         siguienteJugador();
     }
 
@@ -76,8 +82,16 @@ public class ZombieDiceGame {
     }
 
     // Getters para que la consola sepa qué imprimir
-    public Jugador getJugadorActual() { return jugadores.get(indiceJugadorActual); }
-    public int getCerebrosTurno() { return cerebrosTurno; }
-    public int getDisparosTurno() { return disparosTurno; }
-    public boolean perdioTurno() { return disparosTurno >= 3; }
+    public Jugador getJugadorActual() { 
+        return jugadores.get(indiceJugadorActual); 
+    }
+    public int getCerebrosTurno() { 
+        return cerebrosTurno; 
+    }
+    public int getDisparosTurno() { 
+        return disparosTurno; 
+    }
+    public boolean perdioTurno() { 
+        return disparosTurno >= 3; 
+    }
 }

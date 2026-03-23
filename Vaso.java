@@ -1,11 +1,13 @@
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Random;
 
 public class Vaso{
     private ArrayList<ZombieDado> dados;
+    private Random random;
     
     public Vaso(){
-        dados= new ArrayList<ZombieDado>();
+        this.dados= new ArrayList<ZombieDado>();
+        this.random = new Random();
         llenarVaso();
     }
     
@@ -17,7 +19,21 @@ public class Vaso{
         for(int i=0; i<3;i++) dados.add(new ZombieDado("red"));
         
         //Mezcla de los dados
-        Collections.shuffle(dados);
+        mezclarVaso();
+        
+    }
+    
+    private void mezclarVaso(){
+        int n= dados.size();
+        for(int i = n - 1; i > 0;i--){
+            int j= random.nextInt(i+1);
+            
+        ZombieDado temporal= dados.get(i);
+        dados.set(i,dados.get(j));
+        dados.set(j,temporal);
+            
+        }
+        
     }
     
     public ArrayList<ZombieDado>tomarDados(int cantidad){
@@ -33,7 +49,7 @@ public class Vaso{
             d.ocultar();
             dados.add(d);
         }
-        Collections.shuffle(dados);
+        mezclarVaso(); //Se mezlcan nuevamente al regresar los dados
     }
     
     public int getCantidadRestante(){
