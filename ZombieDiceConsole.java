@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class ZombieDiceConsole {
@@ -24,7 +23,7 @@ public class ZombieDiceConsole {
             
             // Verificamos si alguien llegó a la meta (13 cerebros)
             if (juego.getJugadorActual().getCerebrosTotales() >= 13) {
-                System.out.println("\n¡FELICIDADES! " + juego.getJugadorActual().getnombre() + " HA GANADO.");
+                System.out.println(juego.getJugadorActual().getnombre() + " HA GANADO.");
                 hayGanador = true;
             }
         }
@@ -49,7 +48,7 @@ public class ZombieDiceConsole {
     private void ejecutarTurno() {
         Jugador actual = juego.getJugadorActual();
         System.out.println("\n----------------------------------------");
-        System.out.println("Turno de: " + actual.getnombre().toUpperCase());
+        System.out.println("Turno de: " + actual.getnombre());
         System.out.println("Cerebros totales: " + actual.getCerebrosTotales());
         System.out.println("----------------------------------------");
 
@@ -65,7 +64,7 @@ public class ZombieDiceConsole {
             System.out.println(" > Disparos: " + juego.getDisparosTurno());
 
             if (juego.perdioTurno()) {
-                System.out.println("¡PUM! 3 disparos recibidos. Pierdes tus cerebros de este turno.");
+                System.out.println("3 disparos recibidos. Pierdes tus cerebros de este turno.");
                 // Al perder, el juego automáticamente descarta los puntos y pasa al siguiente
                 juego.plantarse(); 
                 turnoActivo = false;
@@ -79,26 +78,34 @@ public class ZombieDiceConsole {
                         turnoActivo = false;
                     }
                 } else {
-                    // Lógica del Bot: Se planta si tiene 2 disparos o ya tiene 3 cerebros
-                    if (juego.getDisparosTurno() >= 2 || juego.getCerebrosTurno() >= 3) {
-                        System.out.println("El Bot decide plantarse con " + juego.getCerebrosTurno() + " cerebros.");
+                    // Lógica del Bot
+                    turnoActivo = decisionBot(juego.getDisparosTurno(), juego.getCerebrosTurno());
+                    if (!turnoActivo){
+                        System.out.println("El Bot decide plantarse");
                         juego.plantarse();
-                        turnoActivo = false;
-                    } else {
-                        System.out.println("El Bot decide arriesgarse y lanzar otra vez...");
-                        // Pequeña pausa para que el usuario pueda leer la consola
-                        try { Thread.sleep(1000); } catch (InterruptedException e) {}
+                    }else{
+                        System.out.println("El Bot decide arriesgarse");
+                        
                     }
                 }
             }
         }
     }
-
-    /**
-     * Punto de entrada principal para ejecutar el programa.
-     */
-    public static void main(String[] args) {
-        ZombieDiceConsole interfaz = new ZombieDiceConsole();
-        interfaz.iniciar();
+    
+    private boolean decisionBot(int disparos, int cerebros){
+        if(disparos == 2){
+            return azar.nextInt(100) < 30;
+        }
+        
+        if(cerebros >= 3){
+            return azar.nextInt(100) > 70;
+        }
+        return true;
+        
     }
+
+    //public static void main(String[] args) {
+    //    ZombieDiceConsole interfaz = new ZombieDiceConsole();
+    //    interfaz.iniciar();
+    //}
 }
