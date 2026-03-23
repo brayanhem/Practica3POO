@@ -54,4 +54,8 @@ public class ZombieDado
     public void ocultar(){
         vista.hacerInvisible();
     }
+    
+    public ZombieDadoView getVista(){
+        return vista;
+    }
 }

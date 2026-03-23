@@ -1,36 +1,28 @@
-public class Jugador{
+public class Jugador {
     private String nombre;
     private int cerebrosTotales;
-    private boolean esHumano;
-    
-    public Jugador(String nombre){
-        this.nombre=nombre;
-        this.cerebrosTotales=0;
+    private boolean esHumano; //para distinguir de los bots
+
+    public Jugador(String nombre, boolean esHumano) {
+        this.nombre = nombre;
         this.esHumano = esHumano;
-        
+        this.cerebrosTotales = 0;
     }
-    
-    public void acumularCerebros(int cantidad){
-        //Aqui va la suma de los cerebros totales del turno
-        this.cerebrosTotales += cantidad;
+
+ 
+    public void acumularCerebros(int puntos) {
+        this.cerebrosTotales = this.cerebrosTotales + puntos;
     }
-    
-    public String getnombre(){
-        return nombre;
-        
+
+    public String getnombre() { 
+        return this.nombre;
     }
-    
-    public int getCerebrosTotales(){
-        return cerebrosTotales;
+
+    public int getCerebrosTotales() {
+        return this.cerebrosTotales;
     }
-    
-    public void resetearCont(){
-        //Se pondran los cerebrosTurno en 0 y los disparosTurno tambien
+
+    public boolean esHumano() {
+        return this.esHumano;
     }
-    
-    public boolean esHumano(){
-        return esHumano;
-    }
-    
-    
 }
