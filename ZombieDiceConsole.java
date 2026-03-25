@@ -16,16 +16,25 @@ public class ZombieDiceConsole {
         System.out.println("=============JUEGO INICIADO===============");
 
         configurarJugadores();
-
-        boolean hayGanador = false;
-        while (!hayGanador) {
-            ejecutarTurno();
+        System.out.println("Quieres empezar la partida?(S/N)");
+        String confirmar="";
+        if(lector.hasNext()){
+            confirmar = lector.next();
+        }
+        
+        if(confirmar.equalsIgnoreCase("S")){
+            boolean hayGanador = false;
+            while (!hayGanador) {
+                ejecutarTurno();
             
             // Verificamos si alguien llegó a la meta (13 cerebros)
-            if (juego.getJugadorActual().getCerebrosTotales() >= 13) {
+                if (juego.getJugadorActual().getCerebrosTotales() >= 13) {
                 System.out.println(juego.getJugadorActual().getnombre() + " HA GANADO.");
                 hayGanador = true;
+                }
             }
+        }else{
+            System.out.println("Partida Terminada.");
         }
     }
 
@@ -51,11 +60,13 @@ public class ZombieDiceConsole {
         System.out.println("Turno de: " + actual.getnombre());
         System.out.println("Cerebros totales: " + actual.getCerebrosTotales());
         System.out.println("----------------------------------------");
-
         juego.iniciarTurno();
+        
         boolean turnoActivo = true;
 
         while (turnoActivo) {
+            
+            
             System.out.println("\nLanzando dados...");
             juego.tirarDados();
 
@@ -104,8 +115,4 @@ public class ZombieDiceConsole {
         
     }
 
-    //public static void main(String[] args) {
-    //    ZombieDiceConsole interfaz = new ZombieDiceConsole();
-    //    interfaz.iniciar();
-    //}
 }
