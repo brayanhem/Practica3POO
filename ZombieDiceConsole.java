@@ -1,118 +1,144 @@
 import java.util.Scanner;
-import java.util.Random;
 
 public class ZombieDiceConsole {
     private ZombieDiceGame juego;
-    private Scanner lector;
-    private Random azar;
+    private Scanner scanner;
 
     public ZombieDiceConsole() {
-        this.juego = new ZombieDiceGame();
-        this.lector = new Scanner(System.in);
-        this.azar = new Random();
+        juego = new ZombieDiceGame();
+        scanner = new Scanner(System.in);
     }
+    //Metodo que inicializa el juego
+    public void iniciarJuego() {
+        //Se pregunta al usuario si quiere iniciar partida
+        System.out.println("===== ZOMBIE DICE =====");
+        System.out.println("¿Deseas iniciar la partida?(S/N)");
 
-    public void iniciar() {
-        System.out.println("=============JUEGO INICIADO===============");
-
-        configurarJugadores();
-        System.out.println("Quieres empezar la partida?(S/N)");
-        String confirmar="";
-        if(lector.hasNext()){
-            confirmar = lector.next();
+        String iniciar = scanner.nextLine();
+        //Si decide no continuar la partida presenta el mensaje y termina el juego
+        if (iniciar.equalsIgnoreCase("n")) {
+            System.out.println("Juego cancelado.");
+            return;
         }
-        
-        if(confirmar.equalsIgnoreCase("S")){
-            boolean hayGanador = false;
-            while (!hayGanador) {
-                ejecutarTurno();
-            
-            // Verificamos si alguien llegó a la meta (13 cerebros)
-                if (juego.getJugadorActual().getCerebrosTotales() >= 13) {
-                System.out.println(juego.getJugadorActual().getnombre() + " HA GANADO.");
-                hayGanador = true;
-                }
-            }
-        }else{
-            System.out.println("Partida Terminada.");
-        }
-    }
+        //Si el usuario decide continuar se comienza pidiendo los jugadores
+        pedirJugadores();
 
-    private void configurarJugadores() {
-        System.out.print("¿Cuántos jugadores Humanos son?: ");
-        int numHumanos = lector.nextInt();
-        for (int i = 1; i <= numHumanos; i++) {
-            System.out.print("Nombre del Jugador " + i + ": ");
-            String nombre = lector.next();
-            juego.agregarJudagor(nombre, true);
-        }
+        boolean juegoTerminado = false;
+        //Este while cumple con las funcion de continuar los turnos
+        while (!juegoTerminado) {
+            Jugador actual = juego.getJugadorActual();
 
-        System.out.print("¿Cuántos jugadores BOTS son?: ");
-        int numBots = lector.nextInt();
-        for (int i = 1; i <= numBots; i++) {
-            juego.agregarJudagor("Bot_Zombie_" + i, false);
-        }
-    }
+            System.out.println("\n---------------------------------");
+            System.out.println("Turno de: " + actual.getNombre());
+            //System.out.println("Cerebros acumulados: " + actual.getCerebrosTotales());
 
-    private void ejecutarTurno() {
-        Jugador actual = juego.getJugadorActual();
-        System.out.println("\n----------------------------------------");
-        System.out.println("Turno de: " + actual.getnombre());
-        System.out.println("Cerebros totales: " + actual.getCerebrosTotales());
-        System.out.println("----------------------------------------");
-        juego.iniciarTurno();
-        
-        boolean turnoActivo = true;
+            juego.iniciarTurno();
 
-        while (turnoActivo) {
-            
-            
-            System.out.println("\nLanzando dados...");
-            juego.tirarDados();
+            boolean turnoTerminado = false;
+            //While para que al terminar el turno nos muestre los resultados del turno
+            while (!turnoTerminado) {
+                juego.tirarDados();
 
-            System.out.println("RESULTADO ACTUAL DEL TURNO:");
-            System.out.println(" > Cerebros: " + juego.getCerebrosTurno());
-            System.out.println(" > Disparos: " + juego.getDisparosTurno());
-
-            if (juego.perdioTurno()) {
-                System.out.println("3 disparos recibidos. Pierdes tus cerebros de este turno.");
-                // Al perder, el juego automáticamente descarta los puntos y pasa al siguiente
-                juego.plantarse(); 
-                turnoActivo = false;
-            } else {
-                if (actual.esHumano()) {
-                    System.out.print("¿Deseas lanzar de nuevo? (S/N): ");
-                    String respuesta = lector.next();
-                    if (respuesta.equalsIgnoreCase("N")) {
-                        System.out.println("Te has plantado con " + juego.getCerebrosTurno() + " cerebros.");
-                        juego.plantarse();
-                        turnoActivo = false;
-                    }
+                System.out.println("\nResultados del turno:");
+                System.out.println("Cerebros obtenidos: " + juego.getCerebrosTurno());
+                System.out.println("Disparos recibidos: " + juego.getDisparosTurno());
+                //Este if sirve para poner un mensaje si se reciben 3 disparos
+                if (juego.hayPerdida()) {
+                    System.out.println("Has recibido 3 disparos.");
+                    System.out.println("Pierdes todos los cerebros de este turno.");
+                    turnoTerminado = true;
                 } else {
-                    // Lógica del Bot
-                    turnoActivo = decisionBot(juego.getDisparosTurno(), juego.getCerebrosTurno());
-                    if (!turnoActivo){
-                        System.out.println("El Bot decide plantarse");
-                        juego.plantarse();
-                    }else{
-                        System.out.println("El Bot decide arriesgarse");
-                        
+                    //Este if sirve para que el usuario decida si lanzar o si decide plantarse
+                    if (actual.esHumano()) {
+                        System.out.println("¿Deseas seguir lanzando?(S/N)");
+
+                        String opcion = scanner.nextLine();
+
+                        if (opcion.equalsIgnoreCase("n")) {
+                            juego.plantarse();
+                            turnoTerminado = true;
+                        }
+                    } else {
+                        if (juego.getCerebrosTurno() >= 2) {
+                            System.out.println(actual.getNombre() + " decide plantarse.");
+                            juego.plantarse();
+                            turnoTerminado = true;
+                        } else {
+                            System.out.println(actual.getNombre() + " decide seguir lanzando.");
+                        }
                     }
                 }
             }
+
+            if (juego.hayPerdida()) {
+                juego.siguienteTurnoPorPerdida();
+            }
+
+            mostrarMarcador();
+
+            if (juego.verificarGanador()) {
+                juegoTerminado = true;
+            }
         }
+
+        mostrarGanador();
     }
-    
-    private boolean decisionBot(int disparos, int cerebros){
-        if(disparos == 2){
-            return azar.nextInt(100) < 30;
+    //Metodo para pedeir los jugadores, cantidad de humanos, bots y nombre del jugador humano.
+    private void pedirJugadores() {
+        int humanos;
+        int computadoras;
+
+        do {
+            System.out.print("Cantidad de jugadores humanos: ");
+            humanos = Integer.parseInt(scanner.nextLine());
+
+            if (humanos < 1) {
+                System.out.println("Debe haber al menos 1 jugador humano.");
+            }
+
+        } while (humanos < 1);
+
+        System.out.print("Cantidad de jugadores computadora: ");
+        computadoras = Integer.parseInt(scanner.nextLine());
+
+        for (int i = 0; i < humanos; i++) {
+            System.out.print("Nombre del jugador humano " + (i + 1) + ": ");
+            String nombre = scanner.nextLine();
+
+            juego.agregarJugador(nombre, true);
         }
-        
-        if(cerebros >= 3){
-            return azar.nextInt(100) > 70;
+
+        for (int i = 0; i < computadoras; i++) {
+            juego.agregarJugador("CPU " + (i + 1), false);
         }
-        return true;
-        
     }
 
+    private void mostrarMarcador() {
+        System.out.println("\n===== MARCADOR =====");
+
+        for (int i = 0; i < juego.getCantidadJugadores(); i++) {
+            Jugador jugador = juego.getJugador(i);
+
+            System.out.println(jugador.getNombre() + ": "
+                + jugador.getCerebrosTotales() + " cerebros");
+        }
+    }
+
+    private void mostrarGanador() {
+        System.out.println("\n===== FIN DEL JUEGO =====");
+
+        Jugador ganador = juego.getJugador(0);
+
+        for (int i = 1; i < juego.getCantidadJugadores(); i++) {
+            Jugador actual = juego.getJugador(i);
+
+            if (actual.getCerebrosTotales() > ganador.getCerebrosTotales()) {
+                ganador = actual;
+            }
+        }
+
+        System.out.println("Tenemos un ganador.");
+        System.out.println("Ganador: " + ganador.getNombre());
+        System.out.println("Cerebros obtenidos: " + ganador.getCerebrosTotales());
+    }
 }

@@ -1,7 +1,12 @@
+/*
+ * Clase para guardar los datos del jugador, tambien nos ayuda con la
+ * verificacion de si es Humano o es Bot, se guarda informacion como la cantidad
+ * de cerebros totales.
+ */
 public class Jugador {
     private String nombre;
+    private boolean esHumano;
     private int cerebrosTotales;
-    private boolean esHumano; //para distinguir de los bots
 
     public Jugador(String nombre, boolean esHumano) {
         this.nombre = nombre;
@@ -9,20 +14,19 @@ public class Jugador {
         this.cerebrosTotales = 0;
     }
 
- 
-    public void acumularCerebros(int puntos) {
-        this.cerebrosTotales = this.cerebrosTotales + puntos;
-    }
-
-    public String getnombre() { 
-        return this.nombre;
-    }
-
-    public int getCerebrosTotales() {
-        return this.cerebrosTotales;
+    public String getNombre() {
+        return nombre;
     }
 
     public boolean esHumano() {
-        return this.esHumano;
+        return esHumano;
+    }
+
+    public int getCerebrosTotales() {
+        return cerebrosTotales;
+    }
+
+    public void acumularCerebros(int cantidad) {
+        cerebrosTotales += cantidad;
     }
 }

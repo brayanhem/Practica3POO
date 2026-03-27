@@ -1,6 +1,3 @@
-/*
-
-*/
 
 public class ZombieDadoView {
     private Square fondo1, fondo2, fondo3;

@@ -36,11 +36,14 @@ public class Vaso{
         
     }
     
-    public ArrayList<ZombieDado>tomarDados(int cantidad){
-        ArrayList <ZombieDado> sacados= new ArrayList<>();
-        for(int i = 0; i < cantidad && !dados.isEmpty();i++){
-            sacados.add(dados.remove(0));
+    public ArrayList<ZombieDado> tomarDados(int cantidad) {
+        ArrayList<ZombieDado> sacados = new ArrayList<ZombieDado>();
+
+        for (int i = 0; i < cantidad && !dados.isEmpty(); i++) {
+            int posicion = random.nextInt(dados.size());
+            sacados.add(dados.remove(posicion));
         }
+
         return sacados;
     }
     
@@ -53,7 +56,7 @@ public class Vaso{
     }
     
     public int getCantidadRestante(){
-        return 0;
+        return dados.size();
     }
     
 
